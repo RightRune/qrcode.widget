@@ -5,6 +5,6 @@ QRcode widget for OBS Studio
 - `url`: a URL para onde o QRcode deve redirecionar
 - `show`: Tempo que o QRcode ficará visivel em minutos
 - `hide`: Tempo que o QRcode ficará escondido em minutos
-- `interval`: Tempo de exibição de cada mensagem
+- `interval`: Tempo de exibição de cada mensagem em segundos
 - `msg1`: Primeira mensagem
 - `msg2`: Segunda mensagem
