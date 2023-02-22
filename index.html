@@ -139,13 +139,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fitty/2.3.6/fitty.min.js"></script>
     <script>
       // Parametros que definirão os valores do Widget
-      const queryParams = String(location?.search)
-        .split("?")[1]
+      const [_, ...queryString] = String(location?.search).split("?");
+      const queryParams = queryString
+        .join("?")
         .split("&")
         .reduce((params, param) => {
           const [key, value] = param.split("=");
           params[key.toLowerCase()] = isNaN(value)
-            ? String(value)
+            ? decodeURIComponent(String(value))
             : Number(value);
           return params;
         }, {});
