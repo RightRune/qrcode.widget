@@ -236,7 +236,7 @@
         // Inicializa o widget
         init() {
           Array.from(this.messageElements).forEach((el, n) => {
-            el.textContent = queryParams[`msg${n + 1}}`] || "";
+            el.textContent = queryParams[`msg${n + 1}`] || `Mensagem ${n + 1}`;
             fitty(el);
           });
           this.updateUrl(queryParams.url || "xog.one/pix");
