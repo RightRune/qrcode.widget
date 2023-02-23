@@ -135,14 +135,13 @@
     <script>
       // Parametros que definirão os valores do Widget
       const searchParams = new URLSearchParams(location.search);
-      const queryParams = {};
-
-      for (let [key, value] of searchParams.entries()) {
-        queryParams[key.toLowerCase()] = isNaN(value)
-          ? String(value)
-          : Number(value);
-      }
-
+      const queryParams = Array.from(searchParams.entries()).reduce(
+        (params, [key, value]) => ({
+          ...params,
+          [key.toLowerCase()]: isNaN(value) ? String(value) : Number(value),
+        }),
+        {}
+      );
       // Definição do objeto Widget
       const Widget = {
         // Variável para controlar o índice de mensagens
@@ -160,15 +159,16 @@
 
         // Alterna as mensagens exibidas no widget
         messageSlider() {
-          const messages = this.messageElements.querySelectorAll("div");
-          if (this.idx >= messages.length) {
+          const messages = this.messageElements.children;
+          const numMessages = messages.length;
+          if (this.idx >= numMessages) {
             this.idx = 0;
           }
-          messages.forEach((el, idx) => {
-            const isCurrent = idx === this.idx;
-            el.classList.toggle("show", isCurrent);
-            el.classList.toggle("hide", !isCurrent);
-          });
+          for (let i = 0; i < numMessages; i++) {
+            const isCurrent = i === this.idx;
+            messages[i].classList.toggle("show", isCurrent);
+            messages[i].classList.toggle("hide", !isCurrent);
+          }
           this.idx++;
         },
 
@@ -229,17 +229,15 @@
 
         // Inicializa o widget
         init() {
-          let messagesLength = 1;
-          while (true) {
-            const messageId = `msg${messagesLength}`;
-            if (!queryParams.hasOwnProperty(messageId)) {
-              break;
-            }
+          const messages = Object.entries(queryParams)
+            .filter(([key]) => key.startsWith("msg"))
+            .sort()
+            .map(([, value]) => value);
+          for (let i = 0; i < messages.length; i++) {
             const messageElement = document.createElement("div");
-            messageElement.textContent = queryParams[messageId];
+            messageElement.textContent = messages[i];
             this.messageElements.append(messageElement);
             fitty(messageElement);
-            messagesLength++;
           }
           this.updateUrl(queryParams.url || "xog.one/pix");
           this.toggle();
