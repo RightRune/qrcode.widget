@@ -1,0 +1,47 @@
+/* Configurações gerais */
+body {
+  background: transparent;
+  font-family: "Exo 2", sans-serif;
+  line-height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos para a caixa de mensagens */
+#widget {
+  width: 100%;
+  max-width: 200px;
+}
+
+#widget .site {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+}
+
+#widget #qrcode {
+  max-width: 100%;
+}
+
+#widget .messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 40px;
+}
+
+#widget .messages > span {
+  position: absolute;
+  text-align: center;
+}
+
+.show {
+  opacity: 1;
+}
+
+.hide {
+  opacity: 0;
+}

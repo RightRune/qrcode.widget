@@ -10,5 +10,6 @@ QRcode widget for OBS Studio
 - `url`: URL para onde o QRcode deve redirecionar
 - `msg1`: Primeira mensagem
 - `msg2`: Segunda mensagem
+- `color`: Define a cor do QRcode
 
-Nessa última atualização, você pode definir quantas mensagens quiser, adicionando os parâmetros `msg3`, `msg4`...
+Você pode definir quantas mensagens quiser, basta adicionar parâmetros `msg3`, `msg4` e etc...
