@@ -4,14 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QRcode widget</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;400;500;600&display=swap"
+    />
     <style>
-      @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
-      @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css");
-      @import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@200;400;500;600&amp;display=swap");
-
       /* Configurações gerais */
       body {
         background: transparent;
+        /* background-color: aquamarine; */ /* for test */
         font-family: "Exo 2", sans-serif;
         line-height: 1rem;
         display: flex;
@@ -23,21 +32,6 @@
       #widget {
         width: 100%;
         max-width: 200px;
-        opacity: 0;
-      }
-
-      #widget.close {
-        animation: boxClose 1s ease;
-        opacity: 0;
-      }
-
-      #widget.open {
-        animation: boxOpen 1s ease;
-        opacity: 1;
-      }
-
-      #widget img {
-        max-width: 100%;
       }
 
       #widget .site {
@@ -47,67 +41,37 @@
         margin-bottom: 0.8rem;
       }
 
+      #widget .qrcode {
+        max-width: 100%;
+        clear: both;
+      }
+
       #widget .messages {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        height: 40px;
+      }
+
+      #widget .messages > span {
+        position: absolute;
         text-align: center;
-        margin: 0.4rem 0 0 0;
       }
 
-      #widget .messages > .show {
-        animation: show 1s ease-in;
+      .show {
+        opacity: 1;
       }
 
-      #widget .messages > .hide {
-        height: 0 !important;
-        width: 0 !important;
-        overflow: hidden;
-        /* animation: hide 0.5s ease-out; */
+      .hide {
+        opacity: 0;
       }
-
-      /* Animações */
-      @keyframes boxClose {
-        0% {
-          transform: translate3d(0, 0, 0);
-        }
-        to {
-          transform: translate3d(0, -500px, 0);
-        }
-      }
-
-      @keyframes boxOpen {
-        0% {
-          transform: translate3d(0, -500px, 0);
-        }
-        to {
-          transform: translate3d(0, 0, 0);
-        }
-      }
-
-      @keyframes show {
-        0% {
-          transform: translate3d(0, 10px, 0);
-        }
-        50% {
-          transform: translate3d(0, -10px, 0);
-        }
-        60% {
-          transform: translate3d(0, 0, 0);
-        }
-      }
-
-      /* @keyframes hide {
-        from {
-          transform: translate3d(0, 0, 0);
-        }
-        to {
-          transform: translate3d(0, 100px, 0);
-        }
-      } */
     </style>
   </head>
   <body>
     <div
       id="widget"
-      class="close bg-white text-dark rounded-3 p-2 mt-2 overflow-hidden"
+      class="bg-white text-dark rounded-3 p-2 mt-2 overflow-hidden"
     >
       <div class="site"><strong></strong></div>
       <div>
@@ -117,6 +81,23 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fitty/2.3.6/fitty.min.js"></script>
     <script>
+      // Usaremos animate.css
+      const animateCSS = async (element, animation, prefix = "animate__") => {
+        const animationName = `${prefix}${animation.replace(prefix, "")}`;
+        const node =
+          element instanceof Element
+            ? element
+            : document.querySelector(element);
+
+        node.classList.add(`${prefix}animated`, animationName);
+
+        await new Promise((resolve) =>
+          node.addEventListener("animationend", resolve, { once: true })
+        );
+
+        node.classList.remove(`${prefix}animated`, animationName);
+      };
+
       // Parametros que definirão os valores do Widget
       const searchParams = new URLSearchParams(location.search);
       const queryParams = Array.from(searchParams.entries()).reduce(
@@ -144,27 +125,41 @@
 
         // Alterna as mensagens exibidas no widget
         messageSlider() {
-          const messages = this.messageElements.children;
+          const messages = Array.from(this.messageElements.children);
           const numMessages = messages.length;
-          if (this.idx >= numMessages) {
-            this.idx = 0;
-          }
-          for (let i = 0; i < numMessages; i++) {
-            const isCurrent = i === this.idx;
-            messages[i].classList.toggle("show", isCurrent);
-            messages[i].classList.toggle("hide", !isCurrent);
-          }
-          this.idx++;
+          const prevIdx = this.idx === 0 ? numMessages - 1 : this.idx - 1;
+          messages.forEach((message, index) => {
+            const active = this.idx === index;
+            const prevMessage = messages[prevIdx];
+            const hasPrevMessage = index > 0;
+            const isActiveOrPrev = index === prevIdx || active;
+            if (active) {
+              message.classList.remove("show", "hide");
+              animateCSS(message, "bounceInLeft").then(() => {
+                message.classList.add("show");
+              });
+              if (prevMessage) {
+                prevMessage.classList.remove("show", "hide");
+                animateCSS(prevMessage, "bounceOutRight").then(() =>
+                  prevMessage.classList.add("hide")
+                );
+              }
+            } else {
+              message.classList.remove("show", "hide");
+              if (!isActiveOrPrev) {
+                message.classList.add("hide");
+              }
+            }
+          });
+          this.idx = (this.idx + 1) % numMessages;
         },
-
-        // Variável para controlar o estado atual do widget
-        status: "hidden",
 
         // Exibe o widget
         show() {
-          this.boxElement.classList.remove("close");
-          this.boxElement.classList.add("open");
-          this.status = "shown";
+          this.boxElement.classList.remove("hide");
+          animateCSS(this.boxElement, "animate__bounceIn").then(() =>
+            this.boxElement.classList.add("show")
+          );
           this.messageInterval = setInterval(
             () => this.messageSlider(),
             this.messageIntervalTime
@@ -175,57 +170,52 @@
         // Oculta o widget
         hide() {
           clearInterval(this.messageInterval);
-          this.boxElement.classList.remove("open");
-          this.boxElement.classList.add("close");
-          this.status = "hidden";
+          this.idx = 0;
+          this.boxElement.classList.remove("show");
+          animateCSS(this.boxElement, "animate__bounceOutUp").then(() =>
+            this.boxElement.classList.add("hide")
+          );
         },
 
         // Alterna o estado do widget entre exibição e ocultação
         toggle() {
-          if (this.status === "shown") {
+          if (this.boxElement.classList.contains("show")) {
             this.hide();
-            setTimeout(
-              () => this.toggle(),
-              parseInt(queryParams.hide || 10) * 60000
-            );
+            setTimeout(() => this.toggle(), (queryParams.hide || 10) * 60000);
           } else {
             this.show();
-            setTimeout(
-              () => this.toggle(),
-              parseInt(queryParams.show || 1) * 60000
-            );
-          }
-        },
-
-        // Atualiza a URL exibida no widget
-        updateUrl(url) {
-          const siteBoxElement = this.boxElement.querySelector(".site strong");
-          const qrCodeElement = this.boxElement.querySelector("img.qrcode");
-          if (qrCodeElement) {
-            qrCodeElement.src = `https://chart.googleapis.com/chart?chs=400x400&cht=qr&chld=L|0&chl=${encodeURIComponent(
-              url
-            )}`;
-          }
-          if (siteBoxElement) {
-            siteBoxElement.textContent = url.replace(/^https?:\/\//i, "");
-            fitty(siteBoxElement, { multiLine: false });
+            setTimeout(() => this.toggle(), (queryParams.show || 1) * 60000);
           }
         },
 
         // Inicializa o widget
         init() {
-          const messages = Object.entries(queryParams)
+          Object.entries(queryParams)
             .filter(([key]) => key.startsWith("msg"))
             .sort()
-            .map(([, value]) => value);
-          for (let i = 0; i < messages.length; i++) {
-            const messageElement = document.createElement("div");
-            messageElement.textContent = messages[i];
-            this.messageElements.append(messageElement);
-            fitty(messageElement);
+            .forEach(([, message]) => {
+              const messageElement = document.createElement("span");
+              messageElement.textContent = message;
+              this.messageElements.append(messageElement);
+              fitty(messageElement);
+            });
+          const url = queryParams.url || "xog.one/pix";
+          const siteBoxElement = this.boxElement.querySelector(".site strong");
+          if (siteBoxElement) {
+            siteBoxElement.textContent = url.replace(/^https?:\/\//i, "");
+            fitty(siteBoxElement, { multiLine: false });
           }
-          this.updateUrl(queryParams.url || "xog.one/pix");
-          this.toggle();
+          const qrCodeElement = this.boxElement.querySelector("img.qrcode");
+          if (qrCodeElement) {
+            const image = new Image();
+            image.src = `https://chart.googleapis.com/chart?chs=400x400&cht=qr&chld=L|0&chl=${encodeURIComponent(
+              url
+            )}`;
+            image.onload = () => {
+              qrCodeElement.src = image.src;
+              this.toggle();
+            };
+          }
         },
       };
 
