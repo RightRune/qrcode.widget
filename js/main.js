@@ -122,7 +122,7 @@ const Widget = {
     try {
       const qrCodeColor = this.color.toString();
       const borderColor = this.color.clone();
-      borderColor.setAlpha(0.4);
+      borderColor.setAlpha(0.18);
       this.boxElement.style.border = `0.1rem solid ${borderColor.toString()}`;
       const siteBoxElement = this.boxElement.querySelector(".site strong");
       const qrCodeElement = document.getElementById("qrcode");
@@ -136,7 +136,7 @@ const Widget = {
           const messageElement = document.createElement("span");
           messageElement.textContent = message;
           this.messageElements.append(messageElement);
-          fitty(messageElement);
+          fitty(messageElement, { multiLine: true, minSize: 12, maxSize: 24 });
         });
       siteBoxElement.textContent = queryParams.url.replace(/^https?:\/\//i, "");
       const qrCode = new QRious({
@@ -148,7 +148,7 @@ const Widget = {
         size: 300,
       });
       if (!qrCode) throw new Error("Erro ao gerar QRcode");
-      fitty(siteBoxElement, { multiLine: false });
+      fitty(siteBoxElement, { multiLine: false, minSize: 12, maxSize: 64 });
       this.toggle();
     } catch (err) {
       console.log(err);
