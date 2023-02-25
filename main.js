@@ -1,21 +1,26 @@
-// Usaremos animate.css
+// Usaremos animate.css para animar a festa
 const animateCSS = async (element, animation, prefix = "animate__") => {
   const animationName = `${prefix}${animation.replace(prefix, "")}`;
   const node =
-    element instanceof Element ? element : document.querySelector(element);
-
+    typeof element === "string" ? document.querySelector(element) : element;
+  if (!node || !(node instanceof Element)) {
+    throw new Error("Elemento não encontrado");
+  }
   node.classList.add(`${prefix}animated`, animationName);
-
   await new Promise((resolve) =>
     node.addEventListener("animationend", resolve, { once: true })
   );
-
   node.classList.remove(`${prefix}animated`, animationName);
+  return node;
 };
 
 // Parametros que definirão os valores do Widget
-const searchParams = new URLSearchParams(location.search);
-const queryParams = Array.from(searchParams.entries()).reduce(
+const locationUrl = location.href.replace(
+  `${location.protocol}//${location.host}${location.pathname}`,
+  ""
+);
+const urlParams = Array.from(new URLSearchParams(locationUrl));
+const queryParams = urlParams.reduce(
   (params, [key, value]) => ({
     ...params,
     [key.toLowerCase()]: isNaN(value) ? String(value) : Number(value),
@@ -46,7 +51,6 @@ const Widget = {
     messages.forEach((message, index) => {
       const active = this.idx === index;
       const prevMessage = messages[prevIdx];
-      const hasPrevMessage = index > 0;
       const isActiveOrPrev = index === prevIdx || active;
       if (active) {
         message.classList.remove("show", "hide");
@@ -132,8 +136,8 @@ const Widget = {
       if (!qrCode) throw new Error("Erro ao gerar QRcode");
       fitty(siteBoxElement, { multiLine: false });
       this.toggle();
-    } catch {
-      console.log("Erro ao iniciar o widget");
+    } catch (err) {
+      console.log(err);
     }
   },
 };
