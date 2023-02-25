@@ -136,7 +136,7 @@ const Widget = {
           const messageElement = document.createElement("span");
           messageElement.textContent = message;
           this.messageElements.append(messageElement);
-          fitty(messageElement, { multiLine: true, minSize: 12, maxSize: 24 });
+          fitty(messageElement, { multiLine: true, minSize: 14, maxSize: 24 });
         });
       siteBoxElement.textContent = queryParams.url.replace(/^https?:\/\//i, "");
       const qrCode = new QRious({
