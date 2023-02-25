@@ -15,21 +15,31 @@ const animateCSS = async (element, animation, prefix = "animate__") => {
 };
 
 // Parametros que definirão os valores do Widget
-const locationUrl = location.href.replace(
-  `${location.protocol}//${location.host}${location.pathname}`,
-  ""
-);
-const urlParams = Array.from(new URLSearchParams(locationUrl));
-const queryParams = urlParams.reduce(
+const queryParams = Array.from(
+  new URLSearchParams(
+    location.href.replace(
+      `${location.protocol}//${location.host}${location.pathname}`,
+      ""
+    )
+  )
+).reduce(
   (params, [key, value]) => ({
     ...params,
     [key.toLowerCase()]: isNaN(value) ? String(value) : Number(value),
   }),
-  {}
+  {
+    url: "https://example.com",
+    show: 1,
+    hide: 10,
+    interval: 5,
+    msg1: "Hello world",
+    msg2: "Hello universe",
+    color: "#212529",
+  }
 );
-
 // Definição do objeto Widget
 const Widget = {
+  color: tinycolor(queryParams.color),
   // Variável para controlar o índice de mensagens
   idx: 0,
 
@@ -41,7 +51,7 @@ const Widget = {
 
   // Variáveis para controlar o intervalo de exibição das mensagens
   messageInterval: null,
-  messageIntervalTime: (queryParams.interval || 5) * 1000,
+  messageIntervalTime: queryParams.interval * 1000,
 
   // Alterna as mensagens exibidas no widget
   messageSlider() {
@@ -100,16 +110,20 @@ const Widget = {
   toggle() {
     if (this.boxElement.classList.contains("show")) {
       this.hide();
-      setTimeout(() => this.toggle(), (queryParams.hide || 10) * 60000);
+      setTimeout(() => this.toggle(), queryParams.hide * 60000);
     } else {
       this.show();
-      setTimeout(() => this.toggle(), (queryParams.show || 1) * 60000);
+      setTimeout(() => this.toggle(), queryParams.show * 60000);
     }
   },
 
   // Inicializa o widget
   init() {
     try {
+      const qrCodeColor = this.color.toString();
+      const borderColor = this.color.clone();
+      borderColor.setAlpha(0.4);
+      this.boxElement.style.border = `0.1rem solid ${borderColor.toString()}`;
       const siteBoxElement = this.boxElement.querySelector(".site strong");
       const qrCodeElement = document.getElementById("qrcode");
       if (!siteBoxElement || !qrCodeElement) {
@@ -124,14 +138,14 @@ const Widget = {
           this.messageElements.append(messageElement);
           fitty(messageElement);
         });
-      const url = queryParams.url || "xog.one/pix";
-      siteBoxElement.textContent = url.replace(/^https?:\/\//i, "");
+      siteBoxElement.textContent = queryParams.url.replace(/^https?:\/\//i, "");
       const qrCode = new QRious({
         element: qrCodeElement,
-        value: url,
-        size: 200,
-        foreground: queryParams.color || "#212529",
+        value: queryParams.url,
+        foreground: qrCodeColor,
         backgroundAlpha: 0,
+        padding: 0,
+        size: 300,
       });
       if (!qrCode) throw new Error("Erro ao gerar QRcode");
       fitty(siteBoxElement, { multiLine: false });

@@ -1,32 +1,33 @@
 # QR Code Widget para Navegador do OBS Studio
 
-Este projeto é um widget de QR code para o navegador do OBS Studio.
+Este é um widget de QR code desenvolvido para ser utilizado no navegador do OBS Studio ou Streamlabs.
 
 ## Como usar
 
-1. Abra o OBS Studio e adicione uma fonte do tipo "Navegador".
-2. Adicione a URL https://git.xog.one/qrcode.widget/ como fonte da página da web.
-3. Configure os parâmetros do widget na URL adicionando os parâmetros com os seguintes valores:
+1. Abra o OBS Studio ou Streamlabs e adicione uma fonte do tipo "Navegador".
+2. Insira a URL https://git.xog.one/qrcode.widget/ como fonte da página da web.
+3. Configure os parâmetros do widget na URL, adicionando os seguintes valores:
 
-| Parâmetro | Descrição                                      | Valor Padrão      |
-| --------- | ---------------------------------------------- | ----------------- |
-| url       | URL para a qual o QR code deve redirecionar    | `https://xog.one` |
-| color     | Cor do QR code                                 | `#212529`         |
-| show      | Tempo de exibição do QR code em minutos        | `1`               |
-| hide      | Tempo de ocultação do QR code em minutos       | `10`              |
-| interval  | Tempo de exibição de cada mensagem em segundos | `5`               |
-| msg1      | Primeira mensagem                              | -                 |
-| msg2      | Segunda mensagem                               | -                 |
-| ...       | Mensagens adicionais                           | -                 |
+| Parâmetro | Descrição                                         | Valor Padrão          |
+| --------- | ------------------------------------------------- | --------------------- |
+| url       | URL para a qual o QR code deve redirecionar       | `https://example.com` |
+| color     | Cor do QR code (em hexadecimal ou nome em inglês) | `#212529`             |
+| show      | Duração da exibição do QR code em minutos         | `1`                   |
+| hide      | Duração da ocultação do QR code em minutos        | `10`                  |
+| interval  | Duração da exibição de cada mensagem em segundos  | `5`                   |
+| msg1      | Primeira mensagem                                 | `Hello world`         |
+| msg2      | Segunda mensagem                                  | `Hello universe`      |
+| ...       | Mensagens adicionais (seguindo o padrão `msg$`)   | -                     |
 
-4. Defina a largura em 240.
-5. Defina a altura em 285.
+4. Defina a largura para 235.
+5. Defina a altura para 300.
 
 Exemplo de URL com parâmetros:
 
-`https://git.xog.one/qrcode.widget/?url=https://www.xogumon.com&msg1=Essa é a mensagem 1&msg2=Essa é a mensagem 2&msg3=Essa é a mensagem 3&show=1&hide=10&interval=5&color=red`
+`https://git.xog.one/qrcode.widget/?url=https://www.example.com&msg1=Essa é a mensagem 1&msg2=Essa é a mensagem 2&msg3=Essa é a mensagem 3&show=1&hide=10&interval=5&color=red`
 
-### Notas
+### Observações
 
-- Certifique-se de testar o widget antes de usá-lo em uma transmissão ao vivo.
-- Não esqueça de definir as mensagens e a URL, caso contrário, a URL padrão será exibida sem mensagens.
+- É importante que você teste o widget antes de utilizá-lo em uma transmissão ao vivo.
+- Não esqueça de definir a URL e as mensagens, caso contrário, o widget exibirá apenas a URL padrão.
+- Foram utilizados neste projeto as bibliotecas Bootstrap, Animate.css, Fitty, TinyColor e QRious.
