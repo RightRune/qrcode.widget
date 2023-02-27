@@ -15,31 +15,34 @@ const animateCSS = async (element, animation, prefix = "animate__") => {
 };
 
 // Parametros que definirão os valores do Widget
-const queryParams = Array.from(
-  new URLSearchParams(
-    location.href.replace(
-      `${location.protocol}//${location.host}${location.pathname}`,
-      ""
-    )
+const searchParams = new URLSearchParams(
+  location.href.replace(
+    `${location.protocol}//${location.host}${location.pathname}`,
+    ""
   )
-).reduce(
-  (params, [key, value]) => ({
-    ...params,
-    [key.toLowerCase()]: isNaN(value) ? String(value) : Number(value),
-  }),
-  {
-    url: "https://example.com",
-    show: 1,
-    hide: 10,
-    interval: 5,
-    msg1: "Hello world",
-    msg2: "Hello universe",
-    color: "#212529",
-  }
 );
+
+const allMessages = searchParams.getAll("msg");
+for (const [key, value] of searchParams.entries()) {
+  if (key.match(/msg[0-9]/)) {
+    allMessages.push(value);
+  }
+}
+
+const queryParams = {
+  url: searchParams.get("url") || "https://example.com",
+  show: Number(searchParams.get("show") || 1),
+  hide: Number(searchParams.get("hide") || 10),
+  interval: Number(searchParams.get("interval") || 5),
+  color: searchParams.get("color") || "#000",
+  msgs: allMessages.length ? allMessages : ["Hello world!", "Hello universe!"],
+};
+
 // Definição do objeto Widget
 const Widget = {
+  // Cor do QR code com tinycolor
   color: tinycolor(queryParams.color),
+
   // Variável para controlar o índice de mensagens
   idx: 0,
 
@@ -122,38 +125,38 @@ const Widget = {
     try {
       const qrCodeColor = this.color.toString();
       const borderColor = this.color.clone();
+      const textColor = this.color.isDark() ? "#000000" : "#ffffff";
+      const background = this.color.isLight() ? "#000000" : "#ffffff";
       borderColor.setAlpha(0.18);
+      this.boxElement.style.backgroundColor = `${background}`;
+      this.boxElement.style.color = `${textColor}`;
       this.boxElement.style.border = `0.1rem solid ${borderColor.toString()}`;
       const siteElement = document.createElement("span");
       siteElement.textContent = queryParams.url.replace(/^https?:\/\//i, "");
       const siteBoxElement = this.boxElement.querySelector(".site");
       siteBoxElement.append(siteElement);
+      fitty(siteElement, { multiLine: false, minSize: 12, maxSize: 64 });
       const qrCodeElement = document.querySelector(".qrcode");
       if (!siteBoxElement || !qrCodeElement) {
         throw new Error();
       }
-      Object.entries(queryParams)
-        .filter(([key]) => key.startsWith("msg"))
-        .sort()
-        .forEach(([, message]) => {
-          const messageElement = document.createElement("span");
-          messageElement.textContent = message;
-          this.messageElements.append(messageElement);
-          fitty(messageElement, { multiLine: true, minSize: 14, maxSize: 24 });
-        });
-      const qrCode = new QRious({
-        element: document.createElement("canvas"),
-        value: queryParams.url,
-        foreground: qrCodeColor,
-        backgroundAlpha: 0,
-        padding: 0,
-        size: 300,
+      queryParams.msgs.forEach((message) => {
+        const messageElement = document.createElement("span");
+        messageElement.textContent = message;
+        this.messageElements.append(messageElement);
+        fitty(messageElement, { multiLine: true, minSize: 14, maxSize: 24 });
       });
-      if (!qrCode) throw new Error("Erro ao gerar QRcode");
-      const qrCodeImage = qrCode.image;
-      qrCodeImage.alt = "QR code";
-      qrCodeElement.append(qrCodeImage);
-      fitty(siteElement, { multiLine: false, minSize: 12, maxSize: 64 });
+      QrCreator.render(
+        {
+          text: queryParams.url,
+          radius: 0.5, // 0.0 to 0.5
+          ecLevel: "L", // L, M, Q, H
+          fill: qrCodeColor,
+          background,
+          size: 166,
+        },
+        qrCodeElement
+      );
       this.toggle();
     } catch (err) {
       console.log(err);
