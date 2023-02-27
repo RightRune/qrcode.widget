@@ -124,8 +124,11 @@ const Widget = {
       const borderColor = this.color.clone();
       borderColor.setAlpha(0.18);
       this.boxElement.style.border = `0.1rem solid ${borderColor.toString()}`;
-      const siteBoxElement = this.boxElement.querySelector(".site strong");
-      const qrCodeElement = document.getElementById("qrcode");
+      const siteElement = document.createElement("span");
+      siteElement.textContent = queryParams.url.replace(/^https?:\/\//i, "");
+      const siteBoxElement = this.boxElement.querySelector(".site");
+      siteBoxElement.append(siteElement);
+      const qrCodeElement = document.querySelector(".qrcode");
       if (!siteBoxElement || !qrCodeElement) {
         throw new Error();
       }
@@ -138,9 +141,8 @@ const Widget = {
           this.messageElements.append(messageElement);
           fitty(messageElement, { multiLine: true, minSize: 14, maxSize: 24 });
         });
-      siteBoxElement.textContent = queryParams.url.replace(/^https?:\/\//i, "");
       const qrCode = new QRious({
-        element: qrCodeElement,
+        element: document.createElement("canvas"),
         value: queryParams.url,
         foreground: qrCodeColor,
         backgroundAlpha: 0,
@@ -148,7 +150,10 @@ const Widget = {
         size: 300,
       });
       if (!qrCode) throw new Error("Erro ao gerar QRcode");
-      fitty(siteBoxElement, { multiLine: false, minSize: 12, maxSize: 64 });
+      const qrCodeImage = qrCode.image;
+      qrCodeImage.alt = "QR code";
+      qrCodeElement.append(qrCodeImage);
+      fitty(siteElement, { multiLine: false, minSize: 12, maxSize: 64 });
       this.toggle();
     } catch (err) {
       console.log(err);

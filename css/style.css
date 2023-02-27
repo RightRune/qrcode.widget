@@ -19,10 +19,12 @@ body {
   align-items: center;
   justify-content: center;
   margin-bottom: 0.8rem;
+  font-weight: 700;
 }
 
-#widget #qrcode {
+#widget .qrcode img {
   max-width: 100%;
+  height: auto;
 }
 
 #widget .messages {
