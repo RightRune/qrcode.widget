@@ -15,16 +15,16 @@ Este é um widget de QR code desenvolvido para ser utilizado no navegador do OBS
 | show      | Duração da exibição do QR code em minutos         | `1`                   |
 | hide      | Duração da ocultação do QR code em minutos        | `10`                  |
 | interval  | Duração da exibição de cada mensagem em segundos  | `5`                   |
-| msg1      | Primeira mensagem                                 | `Hello world`         |
-| msg2      | Segunda mensagem                                  | `Hello universe`      |
-| ...       | Mensagens adicionais (seguindo o padrão `msg$`)   | -                     |
+| msg       | Primeira mensagem                                 | `Hello world`         |
+| msg       | Segunda mensagem                                  | `Hello universe`      |
+| ...       | Mensagens adicionais                              | -                     |
 
 4. Defina a largura para 235.
 5. Defina a altura para 300.
 
 Exemplo de URL com parâmetros:
 
-`https://git.xog.one/qrcode.widget/?url=https://www.example.com&msg1=Essa é a mensagem 1&msg2=Essa é a mensagem 2&msg3=Essa é a mensagem 3&show=1&hide=10&interval=5&color=red`
+`https://git.xog.one/qrcode.widget/?url=https://www.example.com&msg=Essa é a mensagem 1&msg=Essa é a mensagem 2&msg=Essa é a mensagem 3&show=1&hide=10&interval=5&color=red`
 
 ### Observações
 
