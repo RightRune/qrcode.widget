@@ -11,7 +11,7 @@ Este é um widget de QR code desenvolvido para ser utilizado no navegador do OBS
 | Parâmetro | Descrição                                         | Valor Padrão          |
 | --------- | ------------------------------------------------- | --------------------- |
 | url       | URL para a qual o QR code deve redirecionar       | `https://example.com` |
-| color     | Cor do QR code (em hexadecimal ou nome em inglês) | `#212529`             |
+| color     | Cor do QR code (em hexadecimal ou nome em inglês) | `#000000`             |
 | show      | Duração da exibição do QR code em minutos         | `1`                   |
 | hide      | Duração da ocultação do QR code em minutos        | `10`                  |
 | interval  | Duração da exibição de cada mensagem em segundos  | `5`                   |
