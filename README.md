@@ -8,16 +8,18 @@ Este é um widget de QR code desenvolvido para ser utilizado no navegador do OBS
 2. Insira a URL https://git.xog.one/qrcode.widget/ como fonte da página da web.
 3. Configure os parâmetros do widget na URL, adicionando os seguintes valores:
 
-| Parâmetro | Descrição                                         | Valor Padrão          |
-| --------- | ------------------------------------------------- | --------------------- |
-| url       | URL para a qual o QR code deve redirecionar       | `https://example.com` |
-| color     | Cor do QR code (em hexadecimal ou nome em inglês) | `#000000`             |
-| show      | Duração da exibição do QR code em minutos         | `1`                   |
-| hide      | Duração da ocultação do QR code em minutos        | `10`                  |
-| interval  | Duração da exibição de cada mensagem em segundos  | `5`                   |
-| msg       | Primeira mensagem                                 | `Hello world`         |
-| msg       | Segunda mensagem                                  | `Hello universe`      |
-| ...       | Mensagens adicionais                              | -                     |
+| Parâmetro | Descrição                                                                          | Valor Padrão          |
+| --------- | ---------------------------------------------------------------------------------- | --------------------- |
+| bg        | Cor do widget (em hexadecimal ou nome em inglês)                                   | `#ffffff`             |
+| color     | Cor do QR code (em hexadecimal ou nome em inglês)                                  | `#000000`             |
+| show      | Duração da exibição do QR code em minutos                                          | `1`                   |
+| hide      | Duração da ocultação do QR code em minutos                                         | `10`                  |
+| interval  | Duração da exibição de cada mensagem em segundos                                   | `5`                   |
+| url       | URL para a qual o QR code deve redirecionar                                        | `https://example.com` |
+| title     | Titulo exibido no Widget (caso não definido, exibe a url sem protocolo http/https) | `example.com`         |
+| msg       | Primeira mensagem exibida no Widget                                                | `Hello world`         |
+| msg       | Segunda mensagem exibida no widget                                                 | `Hello universe`      |
+| ...       | Mensagens adicionais                                                               | -                     |
 
 4. Defina a largura para 235.
 5. Defina a altura para 300.
