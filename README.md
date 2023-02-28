@@ -32,4 +32,4 @@ Exemplo de URL com parâmetros:
 
 - É importante que você teste o widget antes de utilizá-lo em uma transmissão ao vivo.
 - Não esqueça de definir a URL e as mensagens, caso contrário, o widget exibirá apenas a URL padrão.
-- Foram utilizados neste projeto as bibliotecas Bootstrap, Animate.css, Fitty, TinyColor e QRious.
+- Foram utilizados neste projeto as bibliotecas Bootstrap, Animate.css, Fitty, TinyColor e QR Code Styling.
