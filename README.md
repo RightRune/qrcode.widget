@@ -17,8 +17,7 @@ Este é um widget de QR code desenvolvido para ser utilizado no navegador do OBS
 | interval  | Duração da exibição de cada mensagem em segundos                                   | `5`                   |
 | url       | URL para a qual o QR code deve redirecionar                                        | `https://example.com` |
 | title     | Titulo exibido no Widget (caso não definido, exibe a url sem protocolo http/https) | `example.com`         |
-| msg       | Primeira mensagem exibida no Widget                                                | `Hello world`         |
-| msg       | Segunda mensagem exibida no widget                                                 | `Hello universe`      |
+| msg       | Mnsagem animada exibida no Widget                                                  | -                     |
 | ...       | Mensagens adicionais                                                               | -                     |
 
 4. Defina a largura para 235.
