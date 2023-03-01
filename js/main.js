@@ -3475,33 +3475,22 @@ function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function"
 
 },{}],4:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createElement = exports.animateCss = void 0;
-function animateCss($el, animationName, prefix = "animate__") {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!$el)
-            throw new Error('"$el" é obrigatório!');
-        if (!animationName)
-            throw new Error('"animationName" é obrigatório!');
-        if (animationName.startsWith(prefix))
-            animationName = `${prefix}${animationName.replace(prefix, "")}`;
-        const node = typeof $el === "string" ? document.querySelector($el) : $el;
-        node.classList.add(`${prefix}animated`, animationName);
-        yield new Promise((resolve) => node.addEventListener("animationend", resolve, {
-            once: true,
-        }));
-        node.classList.remove(`${prefix}animated`, animationName);
-        return node;
-    });
+async function animateCss($el, animationName, prefix = "animate__") {
+    if (!$el)
+        throw new Error('"$el" é obrigatório!');
+    if (!animationName)
+        throw new Error('"animationName" é obrigatório!');
+    if (animationName.startsWith(prefix))
+        animationName = `${prefix}${animationName.replace(prefix, "")}`;
+    const node = typeof $el === "string" ? document.querySelector($el) : $el;
+    node.classList.add(`${prefix}animated`, animationName);
+    await new Promise((resolve) => node.addEventListener("animationend", resolve, {
+        once: true,
+    }));
+    node.classList.remove(`${prefix}animated`, animationName);
+    return node;
 }
 exports.animateCss = animateCss;
 function createElement(element, options) {
@@ -3517,40 +3506,97 @@ exports.createElement = createElement;
 
 },{}],5:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a, _b, _c, _d, _e, _f, _g;
 Object.defineProperty(exports, "__esModule", { value: true });
 const fitty_1 = __importDefault(require("fitty"));
 const qr_code_styling_1 = __importDefault(require("qr-code-styling"));
 const tinycolor2_1 = __importDefault(require("tinycolor2"));
 const functions_1 = require("./functions");
 const searchParams = new URLSearchParams(location.href.replace(`${location.protocol}//${location.host}${location.pathname}`, ""));
-const showParam = parseInt((_a = searchParams.get("show")) !== null && _a !== void 0 ? _a : "1");
-const hideParam = parseInt((_b = searchParams.get("hide")) !== null && _b !== void 0 ? _b : "10");
-const intervalParam = parseInt((_c = searchParams.get("interval")) !== null && _c !== void 0 ? _c : "5");
-const urlParam = (_d = searchParams.get("url")) !== null && _d !== void 0 ? _d : "https://example.com/";
-const titleParam = (_e = searchParams.get("title")) !== null && _e !== void 0 ? _e : urlParam.replace(/^https?:\/\/(.*)/, "$1").replace(/\/$/, "");
-const messageParams = searchParams.getAll("msg");
-const colorParam = (0, tinycolor2_1.default)((_f = searchParams.get("color")) !== null && _f !== void 0 ? _f : "#000");
-const bgColorParam = (0, tinycolor2_1.default)((_g = searchParams.get("bg")) !== null && _g !== void 0 ? _g : (colorParam.isDark() ? "#fff" : "#000"));
-const borderColor = colorParam.clone().setAlpha(0.18);
-const widget = document.getElementById("widget");
+const widgetParams = {
+    url: "https://example.com/",
+    title: "",
+    show: 1,
+    hide: 10,
+    interval: 5,
+    bg: "#fff",
+    color: "#000",
+    msg: [],
+};
 searchParams.forEach((value, key) => {
     if (key.match(/msg[0-9]/)) {
-        messageParams.push(value);
+        widgetParams.msg.push(value);
     }
 });
+for (const [key, value] of searchParams.entries()) {
+    if (key.startsWith("msg")) {
+        widgetParams.msg.push(value);
+    }
+    else if (key in widgetParams) {
+        const typedKey = key;
+        if (typeof widgetParams[typedKey] === "number") {
+            widgetParams[typedKey] = parseInt(value, 10);
+        }
+        else {
+            widgetParams[typedKey] = value;
+        }
+    }
+}
+if (!widgetParams.title) {
+    widgetParams.title = widgetParams.url
+        .replace(/^https?:\/\//i, "")
+        .replace(/\/$/, "")
+        .replace(/^mailto:/i, "");
+}
+const isBgFromUser = searchParams.has("bg");
+const isColorFromUser = searchParams.has("color");
+const primaryColor = (0, tinycolor2_1.default)(widgetParams.color);
+const secondaryColor = (0, tinycolor2_1.default)(widgetParams.bg);
+const isSameColor = primaryColor.toRgbString() === secondaryColor.toRgbString();
+const isPrimaryBlack = primaryColor.toHexString() === "#000000";
+const isPrimaryWhite = primaryColor.toHexString() === "#ffffff";
+const isSecondaryBlack = secondaryColor.toHexString() === "#000000";
+const isSecondaryWhite = secondaryColor.toHexString() === "#ffffff";
+const isAllLight = !primaryColor.isDark() && !secondaryColor.isDark();
+const isAllDark = primaryColor.isDark() && secondaryColor.isDark();
+let colorParam;
+let bgColorParam;
+if (!isColorFromUser && isBgFromUser && isSameColor) {
+    colorParam = isPrimaryBlack
+        ? (0, tinycolor2_1.default)("#fff")
+        : isPrimaryWhite
+            ? (0, tinycolor2_1.default)("#000")
+            : primaryColor.complement();
+    bgColorParam = secondaryColor;
+}
+else if ((isColorFromUser && !isBgFromUser && isSameColor) ||
+    (isColorFromUser && isBgFromUser && isSameColor)) {
+    colorParam = primaryColor;
+    bgColorParam = isSecondaryBlack
+        ? (0, tinycolor2_1.default)("#fff")
+        : isSecondaryWhite
+            ? (0, tinycolor2_1.default)("#000")
+            : secondaryColor.complement();
+}
+else if (!isColorFromUser && isBgFromUser && !isSameColor) {
+    colorParam =
+        isAllDark || isAllLight ? secondaryColor.complement() : primaryColor;
+    bgColorParam = secondaryColor;
+}
+else if ((isColorFromUser && !isBgFromUser && !isSameColor) ||
+    (isColorFromUser && isBgFromUser && !isSameColor)) {
+    colorParam = primaryColor;
+    bgColorParam =
+        isAllDark || isAllLight ? primaryColor.complement() : secondaryColor;
+}
+else {
+    colorParam = primaryColor;
+    bgColorParam = secondaryColor;
+}
+const borderColor = colorParam.clone().setAlpha(0.18);
+const widget = document.getElementById("widget");
 if (!widget)
     throw new Error();
 const widgetContent = (0, functions_1.createElement)("div", {
@@ -3565,31 +3611,29 @@ const widgetQRCode = (0, functions_1.createElement)("div", {
 const widgetTitle = (0, functions_1.createElement)("div", {
     className: "title",
 });
-function showMessage(index = 0) {
+async function showMessage(index = 0) {
     var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        const isVisible = !widgetContent.classList.contains("hidden");
-        const totalMessages = messageParams.length;
-        if (!isVisible)
-            return (_a = widgetMessage.firstElementChild) === null || _a === void 0 ? void 0 : _a.remove();
-        if (widgetMessage instanceof HTMLElement && !!totalMessages) {
-            const prevMessageElement = widgetMessage.firstElementChild;
-            if (prevMessageElement)
-                yield (0, functions_1.animateCss)(prevMessageElement, "animate__bounceOut").then(() => {
-                    prevMessageElement.remove();
-                });
-            const messageElement = (0, functions_1.createElement)("span", {
-                textContent: messageParams[index],
+    const isVisible = !widgetContent.classList.contains("hidden");
+    const totalMessages = widgetParams.msg.length;
+    if (!isVisible)
+        return (_a = widgetMessage.firstElementChild) === null || _a === void 0 ? void 0 : _a.remove();
+    if (widgetMessage instanceof HTMLElement && !!totalMessages) {
+        const prevMessageElement = widgetMessage.firstElementChild;
+        if (prevMessageElement)
+            await (0, functions_1.animateCss)(prevMessageElement, "animate__bounceOut").then(() => {
+                prevMessageElement.remove();
             });
-            widgetMessage.append(messageElement);
-            (0, functions_1.animateCss)(messageElement, "animate__bounceIn");
-            (0, fitty_1.default)(messageElement, {
-                minSize: 14,
-                maxSize: 24,
-            });
-            setTimeout(() => showMessage((index + 1) % totalMessages), intervalParam * 1e3);
-        }
-    });
+        const messageElement = (0, functions_1.createElement)("span", {
+            textContent: widgetParams.msg[index],
+        });
+        widgetMessage.append(messageElement);
+        (0, functions_1.animateCss)(messageElement, "animate__bounceIn");
+        (0, fitty_1.default)(messageElement, {
+            minSize: 14,
+            maxSize: 24,
+        });
+        setTimeout(() => showMessage((index + 1) % totalMessages), widgetParams.interval * 1e3);
+    }
 }
 function showWidget() {
     widgetContent.classList.remove("hidden");
@@ -3603,18 +3647,18 @@ function showWidget() {
     }, { once: true });
     (0, functions_1.animateCss)(widgetContent, "animate__bounceIn").then(() => {
         widgetContent.classList.add("shown");
-        setTimeout(() => hideWidget(), showParam * 6e4);
+        setTimeout(() => hideWidget(), widgetParams.show * 6e4);
     });
 }
 function hideWidget() {
     widgetContent.classList.remove("shown");
     (0, functions_1.animateCss)(widgetContent, "animate__bounceOut").then(() => {
         widgetContent.classList.add("hidden");
-        setTimeout(() => showWidget(), hideParam * 6e4);
+        setTimeout(() => showWidget(), widgetParams.hide * 6e4);
     });
 }
 const titleElement = (0, functions_1.createElement)("span", {
-    textContent: titleParam,
+    textContent: widgetParams.title,
 });
 widgetTitle.append(titleElement);
 widgetContent.style.color = colorParam.toString();
@@ -3624,7 +3668,7 @@ widgetContent.append(widgetTitle, widgetQRCode, widgetMessage);
 widget.append(widgetContent);
 const qrCode = new qr_code_styling_1.default({
     type: "svg",
-    data: urlParam,
+    data: widgetParams.url,
     dotsOptions: {
         color: colorParam.toString(),
         type: "rounded",
