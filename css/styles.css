@@ -1703,25 +1703,28 @@ body {
   justify-content: center;
 }
 
-#widget {
+.widget {
   width: 200px;
   text-align: center;
   border-style: solid;
   border-width: 1px;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 10px;
 }
 
-#widget,
-#widget > .title,
-#widget > .qrcode,
-#widget > .message {
+.widget,
+.widget > .title,
+.widget > .title > span,
+.widget > .qrcode,
+.widget > .message,
+.widget > .message > span {
   max-width: 100%;
 }
 
-#widget > .title {
+.widget > .title {
   font-weight: 700;
   line-height: 2rem;
+  box-sizing: content-box;
 }
 
 .shown {

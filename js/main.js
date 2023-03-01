@@ -3484,64 +3484,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var _a, _b, _c, _d, _e, _f, _g;
 Object.defineProperty(exports, "__esModule", { value: true });
-const fitty_1 = __importDefault(require("fitty"));
-const qr_code_styling_1 = __importDefault(require("qr-code-styling"));
-const tinycolor2_1 = __importDefault(require("tinycolor2"));
-const searchParams = new URLSearchParams(location.href.replace(`${location.protocol}//${location.host}${location.pathname}`, ""));
-const showParam = Number((_a = searchParams.get("show")) !== null && _a !== void 0 ? _a : 1);
-const hideParam = Number((_b = searchParams.get("hide")) !== null && _b !== void 0 ? _b : 10);
-const intervalParam = Number((_c = searchParams.get("interval")) !== null && _c !== void 0 ? _c : 5);
-const urlParam = (_d = searchParams.get("url")) !== null && _d !== void 0 ? _d : "https://example.com/";
-const titleParam = (_e = searchParams.get("title")) !== null && _e !== void 0 ? _e : urlParam.replace(/^https?:\/\/(.*)/, "$1").replace(/\/$/, "");
-const messageParams = searchParams.getAll("msg");
-const colorParam = (0, tinycolor2_1.default)((_f = searchParams.get("color")) !== null && _f !== void 0 ? _f : "#000");
-const bgColorParam = (0, tinycolor2_1.default)((_g = searchParams.get("bg")) !== null && _g !== void 0 ? _g : (colorParam.isDark() ? "#fff" : "#000"));
-const borderColor = colorParam.clone().setAlpha(0.18);
-const widget = document.getElementById("widget");
-searchParams.forEach((value, key) => {
-    if (key.match(/msg[0-9]/)) {
-        messageParams.push(value);
-    }
-});
-if (!widget)
-    throw new Error();
-widget.style.color = colorParam.toString();
-widget.style.borderColor = borderColor.toString();
-widget.style.backgroundColor = bgColorParam.toString();
-const widgetMessage = widget.querySelector(".message");
-const widgetQRCode = widget.querySelector(".qrcode");
-const widgetTitle = widget.querySelector(".title");
-if (widgetTitle instanceof HTMLElement) {
-    const titleElement = document.createElement("span");
-    titleElement.textContent = titleParam;
-    widgetTitle.append(titleElement);
-    (0, fitty_1.default)(titleElement, {
-        multiLine: false,
-        minSize: 12,
-        maxSize: 64,
-    });
-}
-if (widgetQRCode instanceof HTMLElement) {
-    const qrCode = new qr_code_styling_1.default({
-        type: "svg",
-        data: urlParam,
-        dotsOptions: {
-            color: colorParam.toString(),
-            type: "extra-rounded",
-        },
-        backgroundOptions: {
-            color: bgColorParam.toString(),
-        },
-        width: widgetQRCode.offsetWidth,
-        height: widgetQRCode.offsetWidth,
-    });
-    qrCode.append(widgetQRCode);
-}
+exports.createElement = exports.animateCss = void 0;
 function animateCss($el, animationName, prefix = "animate__") {
     return __awaiter(this, void 0, void 0, function* () {
         if (!$el)
@@ -3559,51 +3503,139 @@ function animateCss($el, animationName, prefix = "animate__") {
         return node;
     });
 }
-function appendMessage(index = 0) {
-    var _a, _b;
+exports.animateCss = animateCss;
+function createElement(element, options) {
+    const $el = document.createElement(element);
+    if (options) {
+        Object.entries(options).forEach(([key, value]) => {
+            $el[key] = value;
+        });
+    }
+    return $el;
+}
+exports.createElement = createElement;
+
+},{}],5:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var _a, _b, _c, _d, _e, _f, _g;
+Object.defineProperty(exports, "__esModule", { value: true });
+const fitty_1 = __importDefault(require("fitty"));
+const qr_code_styling_1 = __importDefault(require("qr-code-styling"));
+const tinycolor2_1 = __importDefault(require("tinycolor2"));
+const functions_1 = require("./functions");
+const searchParams = new URLSearchParams(location.href.replace(`${location.protocol}//${location.host}${location.pathname}`, ""));
+const showParam = parseInt((_a = searchParams.get("show")) !== null && _a !== void 0 ? _a : "1");
+const hideParam = parseInt((_b = searchParams.get("hide")) !== null && _b !== void 0 ? _b : "10");
+const intervalParam = parseInt((_c = searchParams.get("interval")) !== null && _c !== void 0 ? _c : "5");
+const urlParam = (_d = searchParams.get("url")) !== null && _d !== void 0 ? _d : "https://example.com/";
+const titleParam = (_e = searchParams.get("title")) !== null && _e !== void 0 ? _e : urlParam.replace(/^https?:\/\/(.*)/, "$1").replace(/\/$/, "");
+const messageParams = searchParams.getAll("msg");
+const colorParam = (0, tinycolor2_1.default)((_f = searchParams.get("color")) !== null && _f !== void 0 ? _f : "#000");
+const bgColorParam = (0, tinycolor2_1.default)((_g = searchParams.get("bg")) !== null && _g !== void 0 ? _g : (colorParam.isDark() ? "#fff" : "#000"));
+const borderColor = colorParam.clone().setAlpha(0.18);
+const widget = document.getElementById("widget");
+searchParams.forEach((value, key) => {
+    if (key.match(/msg[0-9]/)) {
+        messageParams.push(value);
+    }
+});
+if (!widget)
+    throw new Error();
+const widgetContent = (0, functions_1.createElement)("div", {
+    className: "widget",
+});
+const widgetMessage = (0, functions_1.createElement)("div", {
+    className: "message",
+});
+const widgetQRCode = (0, functions_1.createElement)("div", {
+    className: "qrcode",
+});
+const widgetTitle = (0, functions_1.createElement)("div", {
+    className: "title",
+});
+function showMessage(index = 0) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const isVisible = !((_a = widget === null || widget === void 0 ? void 0 : widget.classList) === null || _a === void 0 ? void 0 : _a.contains("hidden"));
+        const isVisible = !widgetContent.classList.contains("hidden");
         const totalMessages = messageParams.length;
         if (!isVisible)
-            return (_b = widgetMessage === null || widgetMessage === void 0 ? void 0 : widgetMessage.firstElementChild) === null || _b === void 0 ? void 0 : _b.remove();
+            return (_a = widgetMessage.firstElementChild) === null || _a === void 0 ? void 0 : _a.remove();
         if (widgetMessage instanceof HTMLElement && !!totalMessages) {
-            const messageElement = document.createElement("span");
             const prevMessageElement = widgetMessage.firstElementChild;
             if (prevMessageElement)
-                yield animateCss(prevMessageElement, "animate__bounceOut").then(() => {
+                yield (0, functions_1.animateCss)(prevMessageElement, "animate__bounceOut").then(() => {
                     prevMessageElement.remove();
                 });
-            messageElement.textContent = messageParams[index];
+            const messageElement = (0, functions_1.createElement)("span", {
+                textContent: messageParams[index],
+            });
             widgetMessage.append(messageElement);
+            (0, functions_1.animateCss)(messageElement, "animate__bounceIn");
             (0, fitty_1.default)(messageElement, {
                 minSize: 14,
                 maxSize: 24,
             });
-            animateCss(messageElement, "animate__bounceIn");
-            index = (index + 1) % totalMessages;
-            setTimeout(() => appendMessage(index), intervalParam * 1e3);
+            setTimeout(() => showMessage((index + 1) % totalMessages), intervalParam * 1e3);
         }
     });
 }
 function showWidget() {
-    if (!widget)
-        return;
-    widget.classList.remove("hidden");
-    appendMessage(0);
-    animateCss(widget, "animate__bounceIn").then(() => {
-        widget.classList.add("shown");
+    widgetContent.classList.remove("hidden");
+    showMessage();
+    widgetContent.addEventListener("animationstart", () => {
+        (0, fitty_1.default)(titleElement, {
+            multiLine: false,
+            minSize: 12,
+            maxSize: 64,
+        });
+    }, { once: true });
+    (0, functions_1.animateCss)(widgetContent, "animate__bounceIn").then(() => {
+        widgetContent.classList.add("shown");
         setTimeout(() => hideWidget(), showParam * 6e4);
     });
 }
 function hideWidget() {
-    if (!widget)
-        return;
-    widget.classList.remove("shown");
-    animateCss(widget, "animate__bounceOut").then(() => {
-        widget.classList.add("hidden");
+    widgetContent.classList.remove("shown");
+    (0, functions_1.animateCss)(widgetContent, "animate__bounceOut").then(() => {
+        widgetContent.classList.add("hidden");
         setTimeout(() => showWidget(), hideParam * 6e4);
     });
 }
+const titleElement = (0, functions_1.createElement)("span", {
+    textContent: titleParam,
+});
+widgetTitle.append(titleElement);
+widgetContent.style.color = colorParam.toString();
+widgetContent.style.borderColor = borderColor.toString();
+widgetContent.style.backgroundColor = bgColorParam.toString();
+widgetContent.append(widgetTitle, widgetQRCode, widgetMessage);
+widget.append(widgetContent);
+const qrCode = new qr_code_styling_1.default({
+    type: "svg",
+    data: urlParam,
+    dotsOptions: {
+        color: colorParam.toString(),
+        type: "rounded",
+    },
+    backgroundOptions: {
+        color: bgColorParam.toString(),
+    },
+    width: widgetQRCode.offsetWidth,
+    height: widgetQRCode.offsetWidth,
+});
+qrCode.append(widgetQRCode);
 showWidget();
 
-},{"fitty":1,"qr-code-styling":2,"tinycolor2":3}]},{},[4]);
+},{"./functions":4,"fitty":1,"qr-code-styling":2,"tinycolor2":3}]},{},[5]);
