@@ -1,6 +1,7 @@
 # QR Code Widget para Navegador do OBS Studio
 
 Este é um widget de QR code desenvolvido para ser utilizado no navegador do OBS Studio ou Streamlabs.
+Para ter um resultado visual de toda mudança sem precisar abrir o OBS Studio/Streamlabs, ou se você preferir usar o StreamElements, use o [QRCodeWidget.SE](https://github.com/xogumon/qrwidget). É só seguir o passo-a-passo.
 
 ## Como usar
 
